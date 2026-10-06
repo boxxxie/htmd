@@ -12,17 +12,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        nif: ["2.15", "2.16"]
+        nif: ["2.15"]
         job:
-          - { target: arm-unknown-linux-gnueabihf , os: ubuntu-latest , use-cross: true }
-          - { target: aarch64-unknown-linux-gnu   , os: ubuntu-latest , use-cross: true }
-          - { target: aarch64-unknown-linux-musl  , os: ubuntu-latest , use-cross: true }
-          - { target: aarch64-apple-darwin        , os: macos-latest      }
-          - { target: x86_64-apple-darwin         , os: macos-latest      }
-          - { target: x86_64-unknown-linux-gnu    , os: ubuntu-latest  }
-          - { target: x86_64-unknown-linux-musl   , os: ubuntu-latest , use-cross: true }
-          - { target: x86_64-pc-windows-msvc      , os: windows-latest  }
-          - { target: x86_64-pc-windows-gnu       , os: windows-latest  }
+          - { target: x86_64-unknown-linux-gnu, os: ubuntu-latest }
 
     steps:
     - name: Checkout source code
@@ -31,7 +23,6 @@ jobs:
     - name: Extract project version
       shell: bash
       run: |
-        # Get the project version from mix.exs
         echo "PROJECT_VERSION=$(sed -n 's/^  @version "\(.*\)"/\1/p' mix.exs | head -n1)" >> $GITHUB_ENV
 
     - name: Install Rust toolchain
@@ -48,7 +39,7 @@ jobs:
         project-version: ${{ env.PROJECT_VERSION }}
         target: ${{ matrix.job.target }}
         nif-version: ${{ matrix.nif }}
-        use-cross: ${{ matrix.job.use-cross }}
+        use-cross: false
         project-dir: "native/htmd_nif"
 
     - name: Artifact upload
